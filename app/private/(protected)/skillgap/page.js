@@ -1,5 +1,8 @@
 "use client";
 import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { FaFileUpload, FaClipboardList, FaExclamationTriangle, FaCheckCircle } from "react-icons/fa";
+import { BsArrowRight } from "react-icons/bs";
 
 const analyzeJDandResume = async (jdText, resumeText) => {
   const response = await fetch("/api/skillgap", {
@@ -17,9 +20,10 @@ const Skillgap = () => {
   const [skillGaps, setSkillGaps] = useState([]);
   const [prepChecklist, setPrepChecklist] = useState([]);
   const [loading, setLoading] = useState(false);
-
   const [jdText, setJdText] = useState("");
   const [resumeText, setResumeText] = useState("");
+  const [jdFileName, setJdFileName] = useState("");
+  const [resumeFileName, setResumeFileName] = useState("");
 
   const handleAddToChecklist = (skill) => {
     setPrepChecklist((prev) => (prev.includes(skill) ? prev : [...prev, skill]));
@@ -43,6 +47,7 @@ const Skillgap = () => {
     try {
       const text = await readFileAsText(file);
       setJdText(text);
+      setJdFileName(file.name);
     } catch (err) {
       alert(err);
     }
@@ -54,6 +59,7 @@ const Skillgap = () => {
     try {
       const text = await readFileAsText(file);
       setResumeText(text);
+      setResumeFileName(file.name);
     } catch (err) {
       alert(err);
     }
@@ -73,99 +79,212 @@ const Skillgap = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen container my-10 mx-auto px-4">
-      <div className="border-2 border-slate-300 rounded-xl w-full min-h-screen bg-white p-6">
-        {/* Header */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <img height={45} width={45} src="/wired-lineal-966-privacy-policy-in-reveal.gif" alt="jd" />
-          <h1 className="font-bold text-3xl">JD vs Resume Analyzer</h1>
-        </div>
-        <hr />
-
-        <div className="flex items-center justify-center gap-10 flex-wrap">
-          {/* Upload JD */}
-          <div className="mb-6 mt-5 flex flex-col justify-center items-center">
-            <span className="mb-2 font-bold">Upload Your JD</span>
-            <input
-              type="file"
-              accept=".txt,.pdf,.docx"
-              onChange={handleJDUpload}
-              className="border-2 text-center bg-blue-400 text-white border-gray-300 p-2 rounded-md cursor-pointer"
-            />
-          </div>
-
-          {/* Upload Resume */}
-          <div className="mb-6 mt-5 flex flex-col justify-center items-center">
-            <span className="mb-2 font-bold">Upload Your Resume</span>
-            <input
-              type="file"
-              accept=".txt,.pdf,.docx"
-              onChange={handleResumeUpload}
-              className="border-2 text-center bg-blue-400 text-white border-gray-300 p-2 rounded-md cursor-pointer"
-            />
-          </div>
-        </div>
-
-        {/* Analyze Button */}
-        <div className="text-center my-6">
-          <button
-            onClick={handleAnalyze}
-            className="bg-green-600 cursor-pointer hover:bg-green-700 text-white font-semibold px-6 py-2 rounded-md"
-          >
-            Analyze JD & Resume
-          </button>
-        </div>
-
-        {/* Loading State */}
-        {loading && <p className="text-center text-gray-500 my-4">Analyzing...</p>}
-
-        {/* Focus Areas */}
-        {focusAreas.length > 0 && (
-          <div className="mb-6">
-            <h2 className="font-semibold text-xl mb-2">Focus Areas:</h2>
-            <div className="flex flex-wrap gap-2">
-              {focusAreas.map((area, index) => (
-                <button
-                  key={index}
-                  className="bg-blue-500 cursor-pointer text-white px-4 py-2 rounded-md"
-                  onClick={() => handleAddToChecklist(area)}
-                >
-                  {area}
-                </button>
-              ))}
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-2xl shadow-xl overflow-hidden"
+        >
+          {/* Header */}
+          <div className="bg-gradient-to-r from-blue-600 to-purple-600 px-6 py-8">
+            <div className="flex items-center justify-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-white/20 rounded-full blur-lg"></div>
+                <div className="relative flex items-center justify-center w-16 h-16 bg-white/10 rounded-full">
+                  <FaClipboardList className="text-3xl text-white" />
+                </div>
+              </div>
+              <div className="text-center">
+                <h1 className="text-3xl font-bold text-white mb-2">JD vs Resume Analyzer</h1>
+                <p className="text-blue-100">Identify skill gaps and focus areas</p>
+              </div>
             </div>
           </div>
-        )}
 
-        {/* Skill Gaps */}
-        {skillGaps.length > 0 && (
-          <div className="mb-6">
-            <h2 className="font-semibold text-xl mb-2">Skill Gaps:</h2>
-            <div className="flex flex-wrap gap-2">
-              {skillGaps.map((gap, index) => (
-                <button
-                  key={index}
-                  className="bg-red-500 cursor-pointer text-white px-4 py-2 rounded-md"
-                  onClick={() => handleAddToChecklist(gap)}
-                >
-                  {gap}
-                </button>
-              ))}
+          <div className="p-6">
+            {/* Upload Section */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              {/* JD Upload */}
+              <motion.div 
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-gray-50 rounded-xl p-6 border-2 border-dashed border-gray-200 hover:border-blue-400 transition-colors duration-200"
+              >
+                <div className="flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                    <FaFileUpload className="text-2xl text-blue-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Upload Job Description</h3>
+                  <p className="text-sm text-gray-500 mb-4">Upload your job description file (.txt, .pdf, .docx)</p>
+                  <label className="relative cursor-pointer">
+                    <input
+                      type="file"
+                      accept=".txt,.pdf,.docx"
+                      onChange={handleJDUpload}
+                      className="hidden"
+                    />
+                    <div className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200">
+                      Choose File
+                    </div>
+                  </label>
+                  {jdFileName && (
+                    <p className="mt-2 text-sm text-gray-600">{jdFileName}</p>
+                  )}
+                </div>
+              </motion.div>
+
+              {/* Resume Upload */}
+              <motion.div 
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-gray-50 rounded-xl p-6 border-2 border-dashed border-gray-200 hover:border-purple-400 transition-colors duration-200"
+              >
+                <div className="flex flex-col items-center justify-center">
+                  <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mb-4">
+                    <FaFileUpload className="text-2xl text-purple-600" />
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-2">Upload Resume</h3>
+                  <p className="text-sm text-gray-500 mb-4">Upload your resume file (.txt, .pdf, .docx)</p>
+                  <label className="relative cursor-pointer">
+                    <input
+                      type="file"
+                      accept=".txt,.pdf,.docx"
+                      onChange={handleResumeUpload}
+                      className="hidden"
+                    />
+                    <div className="px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200">
+                      Choose File
+                    </div>
+                  </label>
+                  {resumeFileName && (
+                    <p className="mt-2 text-sm text-gray-600">{resumeFileName}</p>
+                  )}
+                </div>
+              </motion.div>
             </div>
-          </div>
-        )}
 
-        {/* Prep Checklist */}
-        {prepChecklist.length > 0 && (
-          <div className="mb-6">
-            <h2 className="font-semibold text-xl">Your Prep Checklist:</h2>
-            <ul className="list-disc pl-6">
-              {prepChecklist.map((item, index) => (
-                <li key={index} className="text-lg">{item}</li>
-              ))}
-            </ul>
+            {/* Analyze Button */}
+            <div className="text-center mb-8">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={handleAnalyze}
+                disabled={loading || !jdText || !resumeText}
+                className={`px-8 py-3 rounded-xl font-medium text-white shadow-lg transition-all duration-200 ${
+                  loading || !jdText || !resumeText
+                    ? 'bg-gray-400 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700'
+                }`}
+              >
+                {loading ? (
+                  <div className="flex items-center gap-2">
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    Analyzing...
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-2">
+                    <span>Analyze JD & Resume</span>
+                    <BsArrowRight />
+                  </div>
+                )}
+              </motion.button>
+            </div>
+
+            {/* Results Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Focus Areas */}
+              {focusAreas.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-blue-50 rounded-xl p-6"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                      <FaCheckCircle className="text-xl text-blue-600" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">Focus Areas</h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {focusAreas.map((area, index) => (
+                      <motion.button
+                        key={index}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleAddToChecklist(area)}
+                        className="px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-lg hover:from-blue-600 hover:to-blue-700 transition-all duration-200 shadow-sm"
+                      >
+                        {area}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* Skill Gaps */}
+              {skillGaps.length > 0 && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-red-50 rounded-xl p-6"
+                >
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                      <FaExclamationTriangle className="text-xl text-red-600" />
+                    </div>
+                    <h2 className="text-xl font-semibold text-gray-800">Skill Gaps</h2>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {skillGaps.map((gap, index) => (
+                      <motion.button
+                        key={index}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => handleAddToChecklist(gap)}
+                        className="px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 shadow-sm"
+                      >
+                        {gap}
+                      </motion.button>
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Prep Checklist */}
+            {prepChecklist.length > 0 && (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mt-8 bg-gray-50 rounded-xl p-6"
+              >
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <FaClipboardList className="text-xl text-green-600" />
+                  </div>
+                  <h2 className="text-xl font-semibold text-gray-800">Your Prep Checklist</h2>
+                </div>
+                <ul className="space-y-3">
+                  {prepChecklist.map((item, index) => (
+                    <motion.li 
+                      key={index}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="flex items-center gap-3 p-3 bg-white rounded-lg shadow-sm"
+                    >
+                      <div className="w-6 h-6 bg-green-100 rounded-full flex items-center justify-center">
+                        <FaCheckCircle className="text-sm text-green-600" />
+                      </div>
+                      <span className="text-gray-700">{item}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </motion.div>
+            )}
           </div>
-        )}
+        </motion.div>
       </div>
     </div>
   );
