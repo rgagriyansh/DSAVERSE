@@ -173,7 +173,7 @@ const Login = () => {
                         </motion.button>
 
                         <div className="text-center text-sm text-slate-500">
-                            Don't have an account?{' '}
+                            Don&apos;t have an account?{' '}
                             <Link href="/signup" className="text-blue-600 hover:text-blue-700 font-medium transition-colors">
                                 Sign up
                             </Link>

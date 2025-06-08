@@ -138,7 +138,7 @@ export default function Home() {
               <div className="lg:w-1/2 space-y-6">
                 <h3 className="text-3xl md:text-4xl font-bold text-gray-900">Skill Gap Analyzer</h3>
                 <p className="text-lg text-gray-600 leading-relaxed">
-                  Don't just study, evolve! Our analyzer finds your weak spots and guides you to improvement.
+                  Don&apos;t just study, evolve! Our analyzer finds your weak spots and guides you to improvement.
                 </p>
                 <Link href="/signup" 
                   className="inline-flex items-center px-6 py-3 text-lg font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-all duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
