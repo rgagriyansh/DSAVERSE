@@ -196,7 +196,7 @@ export default function Roadmap(){
                       <RiRoadMapLine className="relative text-6xl text-blue-600" />
                     </div>
                     <p className="text-lg text-gray-600 font-medium">Enter your goal and skills to generate a personalized roadmap</p>
-                    <p className="text-sm text-gray-500 mt-2">We'll create a step-by-step guide to help you achieve your career goals</p>
+                    <p className="text-sm text-gray-500 mt-2">We&apos;ll create a step-by-step guide to help you achieve your career goals</p>
                   </motion.div>
                 )}
               </div>
